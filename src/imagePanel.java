@@ -89,17 +89,26 @@ private static BufferedImage inImage, outImage;
         					surroundingPix[g*3+h] = new pixel(  inImage.getRGB(x+h, y+g) );
         				}
         			}
-        			
+        			//before filter class
+        			/*
         			int i;
         			int r=0,g=0,b=0, l=0; //
-        			
+        			*/
         			//setting up simple filters
         			//int[] filter ={0,-3,0,-3,26,-3,0,-3,0}; 
         			//int[] filter ={1,1,1,1,1,1,1,1,1} ;//0,-3,0,0,-3,21,-3,0,-3,0}; 
         			//int[] filter = {0,3,0,3,-36,3,0,3,0};
         			//int[] filter = {0, 9,0,9,-36,9,0,9,0}; //standard image edge detection
-        			//int[] filter = {0, -9,0,-9,36,-9,0,-9,0};
-        			int[] filter = {0,18,0,18,-72,18,0,18,0};
+        			int[] filter = {0, -4,0,-4,16,-4,0,-4,0};
+        			
+        			
+        			//int[] filter = {0,18,0,18,-72,18,0,18,0}; //best edge detection
+        			
+        			//int[] filter = {0,18,0,18,-72,18,0,18,0};
+
+        			
+        			//before filter class
+        			/*
         			for(i =0; i<9; i++)
         			{
         				//Before pixel class
@@ -114,18 +123,19 @@ private static BufferedImage inImage, outImage;
         				b = b +filter[i] *surroundingPix[i].getBlue();
 
         			}
-        			
-        			
         			float fl =(float) (l/9.0);
         			float fr =(float) (r/9.0);
         			float fb =(float) (b/9.0);
         			float fg =(float) (g/9.0);
+        			*/
         			/*
         			if(l>0x000000ff) l = 0x000000ff;
         			if(r>0x000000ff) r = 0x000000ff;
         			if(g>0x000000ff) g = 0x000000ff;
         			if(b>0x000000ff) b = 0x000000ff;
 					*/
+        			
+        			/*//before pixel class
         			int pixlOut = outImage.getRGB(x,y);
         			int outL = (pixlOut & 0xff000000) >> 24; 
         			int outR = (pixlOut & 0x00ff0000) >> 16;
@@ -135,20 +145,35 @@ private static BufferedImage inImage, outImage;
         		    r = (int) ((outR)* fr);
         		 	b = (int) ((outB)* fb);
         	     	g = (int) ((outG)* fg);
-        	     	
-        	     	l = l + 10000;
-        	     	r = r + 10000;
-        	     	b = b + 10000;
-        	     	g = g + 10000;
+        	     	*/
+        			
+        			/*
+        			pixel pixOut = new pixel(outImage.getRGB(x, y));
+        			l = (int) (pixOut.getDark() * fl); 
+        			r = (int) (pixOut.getRed()  * fr);
+        			g = (int) (pixOut.getGreen()* fg);
+        			b = (int) (pixOut.getBlue() * fb);
+        			
+        	     	l = l + 20000;
+        	     	r = r + 20000;
+        	     	b = b + 20000;
+        	     	g = g + 20000;
         			
         			if(l>0x000000ff) l = 0x000000ff;
         			if(r>0x000000ff) r = 0x000000ff;
         			if(g>0x000000ff) g = 0x000000ff;
         			if(b>0x000000ff) b = 0x000000ff;
 					
+        			pixOut.setDark((short)l);
+        			pixOut.setRed((short) r);
+        			pixOut.setGreen((short)g);
+        			pixOut.setBlue((short)b);
+        			*/
         			
-        			
-        			outImage.setRGB(x,y,(l << 24 | r<<16 |  g<<8 | b));
+        			filter edgeDectect = new filter(filter , 9, "edge_Dect");
+        			pixel pixOut = edgeDectect.appleFilter(surroundingPix);
+        			//outImage.setRGB(x,y,(l << 24 | r<<16 |  g<<8 | b));
+        			outImage.setRGB(x,y,pixOut.getPix());
         			//inImage.setRGB(x, y, ((inImage.getRGB(x, y))&0xFFFF00));
         		}
 
