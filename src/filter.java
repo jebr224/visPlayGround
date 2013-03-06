@@ -1,3 +1,4 @@
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -17,7 +18,7 @@ public class filter {
 		}
 		
 	}
-	public pixel appleFilter( pixel[] blockOfPix)
+	public pixel useFilter( pixel[] blockOfPix)
 	{
 		int redSum = 0, greenSum =0,blueSum =0;
 		for(int i =0; i < elements_m; i++)
@@ -52,6 +53,52 @@ public class filter {
 		
 		
 	}
+	
+	public BufferedImage blackWhite( BufferedImage inImage, int[] filterData, int limit)
+	{
+		//byte r,g,b;
+		BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(),BufferedImage.TYPE_INT_RGB);
+		for(int y = 0; y < inImage.getHeight(); y++)
+		{
+			outImage.setRGB(0, y, 0xffffff00);
+			outImage.setRGB(inImage.getWidth()-1, y, 0xffffff00);
+		}
+		for(int x = 0; x < inImage.getWidth(); x++)
+		{
+			outImage.setRGB(x,0,0xffffff00);
+			outImage.setRGB(x,inImage.getHeight()-1,0xffffff00);
+
+		}
+		
+		for(int y = 1; y < inImage.getHeight()-1 ; y++)
+		{
+			for(int x =1; x< inImage.getWidth() -1; x++)
+			{
+				long total = 0;
+				
+				
+				for(int i=0; i < 3; i++ )
+				{
+					for( int j = 0; j < 3; j++)
+					{
+						int temp = inImage.getRGB(i+x-1, j+y-1);
+						long blackWhite = (temp & 0x000000ff) +(temp& 0x0000ff00 >> 16) + (temp & 0x00ff0000 >> 24);
+						//System.out.print(blackWhite);
+						total = total +  blackWhite * filterData[i*3+j];
+					}
+				}
+				//System.out.print(total);
+				if (total < limit)
+					outImage.setRGB(x, y,  0xffffffff);
+				else
+					outImage.setRGB(x,y,  0x00000000);
+			}
+		}
+		
+		
+		return outImage;
+	}
+	
 	
 	
 	
